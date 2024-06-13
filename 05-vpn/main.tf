@@ -9,7 +9,7 @@ resource "aws_key_pair" "vpn" {
 
 module "vpn" {
   source  = "terraform-aws-modules/ec2-instance/aws"
-
+  key_name = aws_key_pair.vpn.key_name
   name = "${var.project_name}-${var.environment}-vpn"
 
   instance_type          = "t3.micro"
@@ -17,7 +17,7 @@ module "vpn" {
   # convert StringList to list and get first element
   subnet_id = local.public_subnet_ids
   ami = data.aws_ami.ami_info.id
-  key_name = aws_key_pair.vpn.key_name
+  
   tags = merge(
     var.common_tags,
     {
