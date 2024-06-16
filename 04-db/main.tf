@@ -1,29 +1,26 @@
 module "db" {
   source = "terraform-aws-modules/rds/aws"
-
-  identifier = "${var.project_name}-${var.environment}"
+  identifier = "${var.project_name}-${var.environment}" #expense-dev
 
   engine            = "mysql"
   engine_version    = "8.0"
   instance_class    = "db.t3.micro"
   allocated_storage = 5
 
-  db_name  = "transactions"
+  db_name  = "transactions" #default schema for expense project
   username = "root"
   port     = "3306"
 
-  iam_database_authentication_enabled = true
-
-  vpc_security_group_ids = [data.aws_ssm_parameter.db_sg_id.value]
-
- 
+  vpc_security_group_ids = [data.aws_ssm_parameter.db_sg_id.value]  
 
   # DB subnet group
-  db_subnet_group_name =  data.aws_ssm_parameter.db_subnet_group_name.value
-  subnet_ids             = ["subnet-12345678", "subnet-87654321"]
+  db_subnet_group_name = data.aws_ssm_parameter.db_subnet_group_name.value
 
   # DB parameter group
   family = "mysql8.0"
+
+  # DB option group
+  major_engine_version = "8.0"
 
   tags = merge(
     var.common_tags,
@@ -31,13 +28,11 @@ module "db" {
         Name = "${var.project_name}-${var.environment}"
     }
   )
- manage_master_user_password = false
- password = "ExpenseApp1"
-  
- skip_final_snapshot = true
-  # DB option group
-  major_engine_version = "8.0"
- 
+
+  manage_master_user_password = false
+  password = "ExpenseApp1"
+  skip_final_snapshot = true
+
   parameters = [
     {
       name  = "character_set_client"
@@ -65,19 +60,23 @@ module "db" {
       ]
     },
   ]
+ 
 }
+
+# create R53 record for RDS endpoint
 
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
   version = "~> 2.0"
 
   zone_name = var.zone_name
-
+  
   records = [
     {
-      name    = "db"
+      name    = "db-${var.environment}"
       type    = "CNAME"
       ttl = 1
+      allow_overwrite = true
       records = [
         module.db.db_instance_address
       ]
