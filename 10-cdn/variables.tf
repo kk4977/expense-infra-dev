@@ -11,12 +11,10 @@ variable "common_tags" {
     Project = "expense"
     Environment = "dev"
     Terraform = "true"
-    Component = "backend"
+    Component = "cdn"
   }
 }
-
 variable "zone_name" {
   default = "sivakumar.cloud"
   
 }
-                                        

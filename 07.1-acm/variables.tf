@@ -19,4 +19,8 @@ variable "zone_name" {
   default = "sivakumar.cloud"
   
 }
+variable "zone_id" {
+  default = "Z08704261IRDUWFCULY6E"
+  
+}
                                         
