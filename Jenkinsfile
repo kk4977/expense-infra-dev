@@ -12,6 +12,7 @@ pipeline {
             steps {
                 sh """ 
                     ls -ltr
+                    terraform init -reconfigure
                 """
             }
         }
