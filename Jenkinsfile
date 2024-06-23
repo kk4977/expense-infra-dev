@@ -35,6 +35,7 @@ pipeline {
         }
         success { 
             echo 'I will run when pipeline is success'
+            deleteDir()
         }
         failure { 
             echo 'I will run when pipeline is failure'
