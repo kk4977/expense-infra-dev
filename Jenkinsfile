@@ -21,6 +21,11 @@ pipeline {
             }
         }
         stage('Plan') {
+            when {
+                expression{
+                    params.action == 'Apply'
+                }
+            }
             
             steps {
                 sh """ 
@@ -51,10 +56,7 @@ pipeline {
                 expression{
                     params.action == 'Destroy'
                 }
-            }
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
+            } 
             }
             steps {
                 sh """ 
@@ -67,10 +69,11 @@ pipeline {
     post { 
         always { 
             echo 'I will always say Hello again!'
+            deleteDir()
         }
         success { 
             echo 'I will run when pipeline is success'
-            deleteDir()
+             
         }
         failure { 
             echo 'I will run when pipeline is failure'
