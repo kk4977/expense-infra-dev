@@ -44,20 +44,20 @@ pipeline {
                 message "Should we continue?"
                 ok "Yes, we should."
             }
-            steps {
+        steps {
                 sh """ 
                 cd 01-vpc
                 terraform apply -auto-approve
                 """
             }
         }
-          stage('Destroy') {
+        stage('Destroy') {
              when {
                 expression{
                     params.action == 'Destroy'
                 }
             } 
-            }
+            
             steps {
                 sh """ 
                 cd 01-vpc
